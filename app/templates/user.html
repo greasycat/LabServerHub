@@ -1,0 +1,24 @@
+{%  extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Terminal</th>
+            <th>Host</th>
+            <th>Running Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.terminal }}</td>
+                <td>{{ user.host }}</td>
+                <td>{{ user.started }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

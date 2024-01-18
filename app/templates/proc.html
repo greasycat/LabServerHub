@@ -1,0 +1,24 @@
+{%  extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>% Cpu</th>
+            <th>% Memory</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for proc in process %}
+            <tr>
+                <td>{{ proc.name }}</td>
+                <td>{{ proc.username }}</td>
+                <td>{{ proc.cpu_percent }}</td>
+                <td>{{ proc.memory_percent }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

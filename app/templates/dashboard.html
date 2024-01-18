@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+    <div class="row">
+        {% for card in cards %}
+            <div class="col-12 col-md-6 col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ card.title }}</h5>
+                        {% if card.text %}
+                            <p class="card-text">{{ card.text }}</p>
+                        {% endif %}
+                        {% if card.percent %}
+                            <p class="card-text">{{ card.percent * 100 }} %</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

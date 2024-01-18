@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    {% block head %}
+    {% endblock %}
+
+
+</head>
+<body>
+
+<div id="liveAlertPlaceholder"></div>
+
+<!-- Navigation Bar -->
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav nav-underline flex-column">
+                    <li class="nav-item mt-2">
+                        <a class="navbar-brand" href="#">
+                            <strong>Hopper Hub</strong>
+                        </a>
+                    </li>
+                    <li class="nav-item mt-2">
+
+                        {% if not current_user.is_authenticated %}
+
+                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                                    data-bs-target="#loginRegisterModal">
+                                Login / Register
+                            </button>
+
+                        {% else %}
+                            <a class="btn btn-outline-secondary" href="/logout">
+                                Logout
+                            </a>
+
+                        {% endif %}
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/">
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/proc">
+                            Process
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user">
+                            Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cron">
+                            Cron Jobs
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="mt-4 col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+</div>
+
+<!-- Login / Register Modal -->
+<script>
+
+    const timeAlert = function (alertMessage, alertType) {
+        const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
+        const appendAlert = (message, type) => {
+            const wrapper = document.createElement('div')
+            wrapper.innerHTML = [
+                `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+                `   <div>${message}</div>`,
+                '   <button type="button" class="btn-close" id="alert-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+                '</div>'
+            ].join('')
+
+            alertPlaceholder.append(wrapper)
+        }
+
+        // Add a timer delay to hide the alert
+        appendAlert(alertMessage, alertType)
+        setTimeout(function () {
+            document.getElementById('alert-close').click();
+        }, 5000);
+    };
+
+</script>
+
+{% set messages = get_flashed_messages(with_categories=true) %}
+
+<script>
+{% if messages %}
+    {% for category, message in messages %}
+        {% if category == 'error-auth' %}
+            document.authError = true;
+            document.authErrorMessage = "{{ message }}";
+        {% else %}
+            document.addEventListener('DOMContentLoaded', function () {
+                timeAlert("{{ message }}", "{{ category }}")
+            }, false)
+        {% endif %}
+    {% endfor %}
+{% endif %}
+</script>
+
+{% include "login.html" %}
+</body>
+</html>

@@ -1,0 +1,113 @@
+<div class="modal fade" id="loginRegisterModal" tabindex="-1" aria-labelledby="loginRegisterModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginRegisterModalLabel">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <div class="alert alert-danger hidden" role="alert" id="loginRegisterAlert"></div>
+                <form id="loginForm" action="/login" method="post" onsubmit="return validateLoginForm()">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="loginEmail" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="loginPassword" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="button" class="btn btn-secondary" onclick="showRegisterForm()">I don't have an
+                        account
+                    </button>
+                </form>
+                <!-- Register Form -->
+                <form id="registerForm" action="/register" method="post" class="hidden"
+                      onsubmit="return validateRegisterForm()">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="registerEmail" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerUsername" class="form-label">Username (must be your hopper username)</label>
+                        <input type="text" class="form-control" id="registerUsername" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="registerPassword" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                    <button type="button" class="btn btn-secondary" onclick="showLoginForm()">I already have an
+                        account
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function validateLoginForm() {
+        let username = document.getElementById('loginUsername').value;
+        let password = document.getElementById('loginPassword').value;
+
+        if (username === '' || password === '') {
+            alert('Please fill out all fields.');
+            return false;
+        }
+        return true;
+    }
+
+    function validateRegisterForm() {
+        let username = document.getElementById('registerUsername').value;
+        let email = document.getElementById('registerEmail').value;
+        let password = document.getElementById('registerPassword').value;
+
+        if (username === '' || email === '' || password === '') {
+            alert('Please fill out all fields.');
+            return false;
+        }
+
+        if (!email.includes('@')) {
+            alert('Please enter a valid email.');
+            return false;
+        }
+        return true;
+    }
+
+    function showRegisterForm() {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerForm').classList.remove('hidden');
+        document.getElementById('loginRegisterModalLabel').textContent = 'Register';
+    }
+
+    function showLoginForm() {
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('registerForm').classList.add('hidden');
+        document.getElementById('loginRegisterModalLabel').textContent = 'Login';
+    }
+
+    function showLoginRegisterModal() {
+        let modal = new bootstrap.Modal(document.getElementById('loginRegisterModal'));
+        modal.show();
+    }
+
+    function appendAuthMessage(message){
+        const alertDiv = document.getElementById('loginRegisterAlert');
+        alertDiv.classList.remove('hidden');
+        alertDiv.textContent = message;
+    }
+
+    if (document.authError) {
+        document.addEventListener('DOMContentLoaded', function () {
+            showLoginRegisterModal();
+            appendAuthMessage(document.authErrorMessage);
+        }, false);
+    }
+</script>
